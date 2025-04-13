@@ -1,5 +1,7 @@
 from flask import Flask, request, jsonify
-from bll.sales_pipeline import json_to_avro
+from lec02.bll.sales_pipeline import json_to_avro
+
+
 
 app = Flask(__name__)
 
