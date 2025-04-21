@@ -1,7 +1,5 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
 import requests
 import json
 import shutil
@@ -10,9 +8,8 @@ import shutil
 
 
 
-
-from dal.json_loader import load_json_files_from_dir
-from dal.avro_saver import save_records_to_avro
+from lec02.dal.json_loader import load_json_files_from_dir
+from lec02.dal.avro_saver import save_records_to_avro
 
 
 def save_sales_to_local_disk(date: str, raw_dir: str):

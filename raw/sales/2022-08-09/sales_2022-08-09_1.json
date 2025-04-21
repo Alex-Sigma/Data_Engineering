@@ -1,0 +1,20 @@
+[
+    {
+        "client": "Kelly Gomez",
+        "price": 1088,
+        "product": "coffee machine",
+        "purchase_date": "2022-08-09"
+    },
+    {
+        "client": "Daisy Mcfarland",
+        "price": 2767,
+        "product": "Laptop",
+        "purchase_date": "2022-08-09"
+    },
+    {
+        "client": "Ashley Schneider",
+        "price": 690,
+        "product": "Vacuum cleaner",
+        "purchase_date": "2022-08-09"
+    }
+]
