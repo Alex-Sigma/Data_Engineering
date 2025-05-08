@@ -1,1 +1,14 @@
-terraform.tfvars
+# Terraform build and state files
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Environment files
+.env
+
+# Sensitive files or overrides
+*.pem
+*.key
+*.log
