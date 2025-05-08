@@ -1,11 +1,13 @@
 # SQL Homework — Lecture 03
 
-## Student: Oleksii Astakhov  
+## Student: Oleksii Astakhov
+
 ## Date: 03.05.2025
 
 ## Завдання
 
 Метою було:
+
 - Підняти демо-базу Pagila на EC2-інстансі за допомогою Docker Compose;
 - Під'єднатися до бази через pgAdmin;
 - Написати SQL-запити для виконання аналітичних завдань.
