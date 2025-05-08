@@ -1,6 +1,6 @@
 # SQL Homework — Lecture 03
 
-## Student: Анастасія Астахова  
+## Student: Oleksii Astakhov  
 ## Date: 03.05.2025
 
 ## Завдання
