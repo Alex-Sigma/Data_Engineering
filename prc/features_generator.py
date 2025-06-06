@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import KBinsDiscretizer, RobustScaler, MaxAbsScaler, MinMaxScaler, StandardScaler, LabelEncoder, OneHotEncoder
@@ -5,8 +6,13 @@ from sklearn.preprocessing import FunctionTransformer
 from itertools import combinations
 import os
 
+# Настройка логгера
+logging.basicConfig(level=logging.INFO, format='📘 [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
+
 def generate_features_iris():
     df = pd.read_csv("data/iris_data.csv")
+    logger.info(f"Loaded {df.shape[0]} rows with {df.shape[1]} columns.")
     
     numeric_cols = ['sepal_length', 'sepal_width', 'petal_length', 'petal_width']
     result = df[numeric_cols].copy()
@@ -43,7 +49,7 @@ def generate_features_iris():
     result['species_label_encoded'] = LabelEncoder().fit_transform(df['species'])
 
     # One-hot
-    ohe = OneHotEncoder(sparse=False, drop=None)
+    ohe = OneHotEncoder(sparse_output=False, drop=None)
     ohe_result = ohe.fit_transform(df[['species']])
     ohe_cols = ohe.get_feature_names_out(['species'])
     result[ohe_cols] = ohe_result
@@ -51,7 +57,8 @@ def generate_features_iris():
     # Сохраняем
     os.makedirs("data/db", exist_ok=True)
     result.to_csv("data/db/features_iris.csv", index=False)
-    print("✅ Features saved to data/db/features_iris.csv")
+    logger.info("✅ Features saved to data/db/features_iris.csv")
+    ## print("✅ Features saved to data/db/features_iris.csv")
 
 if __name__ == "__main__":
     generate_features_iris()
