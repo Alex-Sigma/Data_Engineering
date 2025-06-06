@@ -1,14 +1,32 @@
-# Terraform build and state files
+# Ignore virtual environment
+venv/
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+
+# Ignore Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore OS files
+.DS_Store
+
+# Ignore log files
+*.log
+
+# Ignore Terraform state and backup files
+terraform.tfstate
+terraform.tfstate.*
 .terraform/
-*.tfstate
-*.tfstate.backup
-*.tfvars
 .terraform.lock.hcl
 
-# Environment files
-.env
+# Ignore local secrets or variables
+terraform.tfvars
 
-# Sensitive files or overrides
-*.pem
-*.key
-*.log
+# Ignore compiled R files (if any)
+*.RData
+*.rdb
+*.rds
+
+# Ignore build/output binaries
+darwin_amd64/

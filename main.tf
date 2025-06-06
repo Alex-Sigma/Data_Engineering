@@ -1,31 +1,39 @@
 provider "aws" {
-  region     = "eu-north-1"
-  access_key = var.aws_access_key
-  secret_key = var.aws_secret_key
+  region = var.region
 }
 
-resource "aws_key_pair" "de_key" {
-  key_name   = "dataops-key" # <-- имя ключа на AWS
-  public_key = file("~/.ssh/id_rsa.pub")
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "5.1.1"
+
+  name = "mwaa-vpc"
+  cidr = "10.0.0.0/16"
+
+  azs             = ["${var.region}a", "${var.region}b"]
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]
+
+  enable_dns_hostnames = true
+  enable_dns_support   = true
 }
 
-resource "aws_security_group" "de_sg" {
-  name        = "de-sg"
-  description = "Allow SSH and Postgres"
+resource "aws_s3_bucket" "mwaa_bucket" {
+  bucket        = var.bucket_name
+  force_destroy = true
+}
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_s3_bucket_public_access_block" "block" {
+  bucket = aws_s3_bucket.mwaa_bucket.id
 
-  ingress {
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+resource "aws_security_group" "mwaa_sg" {
+  name        = "mwaa-sg"
+  description = "Security group for MWAA environment"
+  vpc_id      = module.vpc.vpc_id
 
   egress {
     from_port   = 0
@@ -35,42 +43,35 @@ resource "aws_security_group" "de_sg" {
   }
 }
 
-resource "aws_instance" "de_ec2" {
-  ami                    = "ami-04a5f55f5196f401f"  # Ubuntu 22.04 LTS in eu-north-1
-  instance_type          = "t3.medium"
-  key_name               = aws_key_pair.de_key.key_name
-  vpc_security_group_ids = [aws_security_group.de_sg.id]
+module "mwaa" {
+  source = "github.com/aws-ia/terraform-aws-mwaa"
 
-  tags = {
-    Name = "de-instance"
+  name               = var.environment_name
+  dag_s3_path        = "dags"
+  source_bucket_name = aws_s3_bucket.mwaa_bucket.bucket
+
+  private_subnet_ids  = module.vpc.private_subnets
+  security_group_ids  = [aws_security_group.mwaa_sg.id]
+  vpc_id              = module.vpc.vpc_id
+
+  airflow_version     = "2.8.1"
+  environment_class   = "mw1.small"
+
+  airflow_configuration_options = {
+    "core.default_timezone" = "Europe/Kyiv"
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt install -y apt-transport-https ca-certificates curl software-properties-common",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg",
-      "echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu jammy stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null",
-      "sudo apt update",
-      "sudo apt install -y docker-ce docker-ce-cli containerd.io",
-      "sudo usermod -aG docker ubuntu",
-      "sudo curl -L https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose"
-    ]
-
-    connection {
-      type        = "ssh"
-      user        = "ubuntu"
-      private_key = file("~/.ssh/id_rsa")
-      host        = self.public_ip
-    }
+  logging_configuration = {
+    dag_processing_logs = "INFO"
+    scheduler_logs      = "INFO"
+    task_logs           = "INFO"
+    webserver_logs      = "INFO"
+    worker_logs         = "INFO"
   }
-  
-  lifecycle {
-    ignore_changes = [user_data]
-  }
-}
 
-output "public_ip" {
-  value = aws_instance.de_ec2.public_ip
+  requirements_s3_path     = "requirements.txt"      # 👈 путь к requirements.txt в корне
+  webserver_access_mode    = "PUBLIC_ONLY"           # 👈 доступна из браузера
+
+  min_workers = 1
+  max_workers = 2
 }
