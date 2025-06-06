@@ -1,32 +1,66 @@
-# Ignore virtual environment
+# === PYTHON ===
 venv/
-
-# Ignore Python cache
 __pycache__/
 *.py[cod]
-
-# Ignore Jupyter notebook checkpoints
-.ipynb_checkpoints/
-
-# Ignore OS files
-.DS_Store
-
-# Ignore log files
+*.so
+*.pyd
+*.tmp
+*.bak
 *.log
 
-# Ignore Terraform state and backup files
+# Jupyter
+.ipynb_checkpoints/
+
+# === TERRAFORM ===
 terraform.tfstate
 terraform.tfstate.*
 .terraform/
 .terraform.lock.hcl
-
-# Ignore local secrets or variables
 terraform.tfvars
 
-# Ignore compiled R files (if any)
+# === R / RStudio ===
 *.RData
 *.rdb
 *.rds
+*.Rproj
+.Rproj.user/
 
-# Ignore build/output binaries
+# === AIRFLOW & MWAA ===
+airflow.db
+logs/
+.dags/
+plugins/__pycache__/
+*.airflow
+
+# === DATA OUTPUT ===
+data/db/*.csv
+*.sqlite
+*.parquet
+*.avro
+
+# === SYSTEM FILES ===
+.DS_Store
+Thumbs.db
+
+# === BUILD ARTIFACTS ===
 darwin_amd64/
+build/
+dist/
+*.egg-info/
+
+# === ENV / CREDENTIALS ===
+.env
+.env.*
+*.env
+secrets.yaml
+
+# === IDEs ===
+.vscode/
+.idea/
+*.code-workspace
+
+# === TEST ARTIFACTS ===
+.coverage
+pytest_cache/
+htmlcov/
+__snapshot__/
