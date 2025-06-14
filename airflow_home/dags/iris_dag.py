@@ -25,7 +25,7 @@ with DAG(
         task_id="generate_features",
         python_callable=generate_features,
         op_kwargs={
-            "input_path": "data/db/iris_data.csv",
+            "input_path": "data/iris/iris_data.csv",
             "output_path": "data/db/features_iris.csv",
         },
     )
