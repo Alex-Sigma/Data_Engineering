@@ -45,6 +45,6 @@ def generate_features(input_path: str, output_path: str):
 
 if __name__ == "__main__":
     generate_features(
-        input_path="data/iris_data.csv",
+        input_path="data/db/iris_data.csv",
         output_path="data/db/features_iris.csv"
     )
