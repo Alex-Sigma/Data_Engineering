@@ -1,3 +1,4 @@
+# # iris_simulate.py
 import pandas as pd
 import numpy as np
 
@@ -8,7 +9,11 @@ def simulate_iris_with_bootstrap(input_path: str, output_path: str, dates: list[
     result_frames = []
     for date in dates:
         # Бутстрэппинг с сохранением статистики
-        part = df_shuffled.sample(n=samples_per_date, replace=True, random_state=hash(date) % 2**32).copy()
+        part = df_shuffled.sample(
+            n=samples_per_date,
+            replace=True,
+            random_state=hash(date) % 2**32
+        ).copy()
         part["date"] = date
         result_frames.append(part)
 
@@ -21,7 +26,14 @@ if __name__ == "__main__":
     simulate_iris_with_bootstrap(
         input_path="data/iris/iris_data.csv",
         output_path="data/simulated/iris_simulated.csv",
-        dates=["2025-06-14", "2025-06-15", "2025-06-16"],
-        samples_per_date=150  # теперь для каждой даты будет 150 строк
+        dates=[
+            "2025-06-14", "2025-06-15", "2025-06-16",
+            "2025-06-20", "2025-06-21", "2025-06-22",
+            "2025-06-23", "2025-06-24"
+        ],
+        samples_per_date=150
     )
+
+
+
 
