@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'ml_pipeline.zip'))
+
 from airflow.operators.email import EmailOperator
 from airflow import DAG
 from airflow.operators.python import PythonOperator

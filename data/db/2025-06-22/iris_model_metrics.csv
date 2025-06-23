@@ -1,0 +1,3 @@
+model_type,accuracy,run_timestamp
+full_model,1.0,2025-06-23 11:04:30.658861
+top5_model,0.9866666666666667,2025-06-23 11:04:30.658861

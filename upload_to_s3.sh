@@ -1,21 +1,18 @@
 #!/bin/bash
 
-# Укажи точное имя бакета, созданного Terraform
+# Укажи точное имя бакета
 BUCKET_NAME="airflow-student-bucket20250531122847544200000002"
 
-echo "Uploading DAGs..."
-aws s3 cp dags/process_iris.py s3://$BUCKET_NAME/dags/
+echo "🚀 Uploading DAG and dependencies..."
 
-echo "Uploading ML scripts..."
-aws s3 cp --recursive ml/ s3://$BUCKET_NAME/ml/
+# DAG и функции
+aws s3 cp airflow_home/dags/iris_dag.py s3://$BUCKET_NAME/dags/ --acl bucket-owner-full-control
+aws s3 cp airflow_home/dags/ml_pipeline.zip s3://$BUCKET_NAME/dags/ --acl bucket-owner-full-control
 
-echo "Uploading dbt project..."
-aws s3 cp --recursive dbt/ s3://$BUCKET_NAME/dbt/
+# Requirements
+aws s3 cp requirements.txt s3://$BUCKET_NAME/requirements.txt --acl bucket-owner-full-control
 
-echo "Uploading requirements.txt..."
-aws s3 cp requirements.txt s3://$BUCKET_NAME/requirements.txt
+# Iris Dataset
+aws s3 cp data/simulated/iris_simulated.csv s3://$BUCKET_NAME/data/iris_simulated.csv --acl bucket-owner-full-control
 
-echo "Uploading iris dataset..."
-aws s3 cp data/iris_data.csv s3://$BUCKET_NAME/data/iris_data.csv
-
-echo "✅ Done uploading all MWAA resources."
+echo "✅ Done uploading DAG, requirements, and dataset."

@@ -2,5 +2,5 @@ scikit-learn
 pandas
 numpy
 joblib
-apache-airflow>=2.10,<3.0
-flask-session>=0.4,<1.0
+# apache-airflow>=2.10,<3.0
+# flask-session>=0.4,<1.0
