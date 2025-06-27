@@ -2,6 +2,21 @@
 # import os
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'ml_pipeline.zip'))
 
+
+# # 🔍 Отладка: печатаем путь и содержимое ZIP
+# print("=== DAG iris_pipeline is loading ===")
+# print("sys.path:", sys.path)
+
+# import zipfile
+# zip_path = os.path.join(os.path.dirname(__file__), 'ml_pipeline.zip')
+# if os.path.exists(zip_path):
+#     with zipfile.ZipFile(zip_path) as z:
+#         print("Contents of ml_pipeline.zip:")
+#         print(z.namelist())
+# else:
+#     print("⚠️ ml_pipeline.zip not found!")
+
+# # 📦 Импорты из Airflow и твоего модуля
 # from airflow.operators.email import EmailOperator
 # from airflow import DAG
 # from airflow.operators.python import PythonOperator
@@ -84,30 +99,12 @@
 
 #     task_generate_features >> task_train_model >> task_predict >> task_evaluate_metrics >> email_task
 
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'ml_pipeline.zip'))
-
-
-# 🔍 Отладка: печатаем путь и содержимое ZIP
-print("=== DAG iris_pipeline is loading ===")
-print("sys.path:", sys.path)
-
-import zipfile
-zip_path = os.path.join(os.path.dirname(__file__), 'ml_pipeline.zip')
-if os.path.exists(zip_path):
-    with zipfile.ZipFile(zip_path) as z:
-        print("Contents of ml_pipeline.zip:")
-        print(z.namelist())
-else:
-    print("⚠️ ml_pipeline.zip not found!")
-
-# 📦 Импорты из Airflow и твоего модуля
 from airflow.operators.email import EmailOperator
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 
+# 📦 Импорты из обычной директории ml_pipeline
 from ml_pipeline.features import generate_features
 from ml_pipeline.train import train_and_save_models
 from ml_pipeline.predict import predict_and_save
@@ -183,5 +180,5 @@ with DAG(
         """,
     )
 
+    # Устанавливаем порядок задач
     task_generate_features >> task_train_model >> task_predict >> task_evaluate_metrics >> email_task
-
